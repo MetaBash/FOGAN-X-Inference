@@ -227,7 +227,13 @@ def infer_video( video_name ):
 
 def infer_image( img_name ):    
     try: 
-        loaded_weights = torch.load('./model/saved_models/generator.pt') #, map_location=torch.device('cpu') )
+        is_GPU = torch.cuda.is_available() 
+        
+        if( not is_GPU ):
+            loaded_weights = torch.load('./model/saved_models/generator.pt' ,  map_location=torch.device('cpu') )
+        else: 
+            loaded_weights = torch.load('./model/saved_models/generator.pt')
+
         transform = transforms.Compose([ 
             transforms.Resize((512, 512)),
             transforms.ToTensor() 
@@ -235,11 +241,12 @@ def infer_image( img_name ):
 
         model = GeneratorResNet(input_nc=3, output_nc=3, ngf=64, n_blocks=4, img_size=512, light=True)
         model.load_state_dict( loaded_weights )
-        model.to("cuda")
-        model.eval()
+        model.eval() 
+        model.to("cuda") if is_GPU else model.to("cpu")
 
         start_time = time.time()
-        img_tensor =  transform( Image.fromarray(np.array(Image.open(f"./input/{img_name}.png"))[:,:,::-1]) ).unsqueeze(0).cuda()
+        img_tensor =  transform( Image.fromarray(np.array(Image.open(f"./input/images/{img_name}.png"))[:,:,::-1]) ).unsqueeze(0)
+        img_tensor = img_tensor.cuda() if is_GPU else img_tensor.cpu()
         output = model( img_tensor ) 
         save_image( img_tensor, f"val_outputs/{img_name}_in.png", normalize=True)
         save_image( output[0], f"val_outputs/{img_name}_out.png", normalize=True)
@@ -250,5 +257,6 @@ def infer_image( img_name ):
     except Exception as e: 
         print("error", e )
         
-infer_export_video('./test/video.mp4')
-    
+# infer_export_video('./test/video.mp4')
+infer_image('image')
+
