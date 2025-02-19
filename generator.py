@@ -9,13 +9,13 @@ class ResnetBlock(nn.Module):
         super(ResnetBlock, self).__init__()
         conv_block = []
         conv_block += [nn.ReflectionPad2d(1),
-                       nn.Conv2d(dim, dim, kernel_size=3, stride=1, padding=0, bias=use_bias),
-                       nn.InstanceNorm2d(dim),
-                       nn.ReLU(True)]
+                    nn.Conv2d(dim, dim, kernel_size=3, stride=1, padding=0, bias=use_bias),
+                    nn.InstanceNorm2d(dim),
+                    nn.ReLU(True)]
 
         conv_block += [nn.ReflectionPad2d(1),
-                       nn.Conv2d(dim, dim, kernel_size=3, stride=1, padding=0, bias=use_bias),
-                       nn.InstanceNorm2d(dim)]
+                    nn.Conv2d(dim, dim, kernel_size=3, stride=1, padding=0, bias=use_bias),
+                    nn.InstanceNorm2d(dim)]
 
         self.conv_block = nn.Sequential(*conv_block)
 
@@ -99,16 +99,16 @@ class GeneratorResNet(nn.Module):
         self.light = light
         DownBlock = []
         DownBlock += [nn.ReflectionPad2d(3),
-                      nn.Conv2d(input_nc, ngf, kernel_size=7, stride=1, padding=0, bias=False),
-                      nn.InstanceNorm2d(ngf),
-                      nn.ReLU(True)]
+                    nn.Conv2d(input_nc, ngf, kernel_size=7, stride=1, padding=0, bias=False),
+                    nn.InstanceNorm2d(ngf),
+                    nn.ReLU(True)]
         n_downsampling = 2
         for i in range(n_downsampling):
             mult = 2**i
             DownBlock += [nn.ReflectionPad2d(1),
                           nn.Conv2d(ngf * mult, ngf * mult * 2, kernel_size=3, stride=2, padding=0, bias=False),
                           nn.InstanceNorm2d(ngf * mult * 2),
-                          nn.ReLU(True)]
+                        nn.ReLU(True)]
         mult = 2**n_downsampling
         for i in range(n_blocks):
             DownBlock += [ResnetBlock(ngf * mult, use_bias=False)]
@@ -120,14 +120,14 @@ class GeneratorResNet(nn.Module):
 
         if self.light:#64
             FC = [nn.Linear(ngf * mult, ngf * mult, bias=False),
-                  nn.ReLU(True),
+                nn.ReLU(True),
                   nn.Linear(ngf * mult, ngf * mult, bias=False),
-                  nn.ReLU(True)]
+                nn.ReLU(True)]
         else:
             FC = [nn.Linear( ngf * mult * (img_size // mult) * (img_size // mult), ngf * mult, bias=False),
-                  nn.ReLU(True),
+            nn.ReLU(True),
                   nn.Linear(ngf * mult, ngf * mult, bias=False),
-                  nn.ReLU(True)]
+                nn.ReLU(True)]
         self.gamma = nn.Linear(ngf * mult, ngf * mult, bias=False)
         self.beta = nn.Linear(ngf * mult, ngf * mult, bias=False)
 
@@ -138,12 +138,12 @@ class GeneratorResNet(nn.Module):
         for i in range(n_downsampling):
             mult = 2**(n_downsampling - i)
             UpBlock2 += [nn.Upsample(scale_factor=2, mode='nearest'),
-                         nn.ReflectionPad2d(1),
+                        nn.ReflectionPad2d(1),
                          nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
                          ILN(int(ngf * mult / 2)),
-                         nn.ReLU(True)]
+                        nn.ReLU(True)]
         UpBlock2 += [nn.ReflectionPad2d(3),
-                     nn.Conv2d(ngf, output_nc, kernel_size=7, stride=1, padding=0, bias=False)]
+                    nn.Conv2d(ngf, output_nc, kernel_size=7, stride=1, padding=0, bias=False)]
 
         self.DownBlock = nn.Sequential(*DownBlock)
         self.FC = nn.Sequential(*FC)

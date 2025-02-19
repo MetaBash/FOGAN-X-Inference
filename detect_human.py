@@ -7,9 +7,9 @@ modelpath = "./hd_model/MobileNetSSD_deploy.caffemodel"
 detector = cv2.dnn.readNetFromCaffe(protopath, modelpath)
 
 CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
-           "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
-           "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-           "sofa", "train", "tvmonitor"]
+        "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+        "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+        "sofa", "train", "tvmonitor"]
 
 # cap = cv2.VideoCapture("videos/test_video.mp4")
 def inferVideo():

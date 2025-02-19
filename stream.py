@@ -44,17 +44,17 @@ def save_img( frame ):
 
 
 
-protopath = "./hd_model/MobileNetSSD_deploy.prototxt"
-modelpath = "./hd_model/MobileNetSSD_deploy.caffemodel"
+protopath = "./model/hd_model/MobileNetSSD_deploy.prototxt"
+modelpath = "./model/hd_model/MobileNetSSD_deploy.caffemodel"
 detector = cv2.dnn.readNetFromCaffe(protopath, modelpath)
 
 CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
-           "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
-           "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-           "sofa", "train", "tvmonitor"]
+        "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+        "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+        "sofa", "train", "tvmonitor"]
 
 
-loaded_weights = torch.load('./saved_models/generator.pt') #, map_location=torch.device('cpu') )
+loaded_weights = torch.load('./model/saved_models/generator.pt') #, map_location=torch.device('cpu') )
 
 model = GeneratorResNet(input_nc=3, output_nc=3, ngf=64, n_blocks=4,img_size=512, light=True)
 model.load_state_dict( loaded_weights )
