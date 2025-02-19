@@ -258,5 +258,5 @@ def infer_image( img_name ):
         print("error", e )
         
 # infer_export_video('./test/video.mp4')
-infer_image('image')
+infer_image('foggy')
 
